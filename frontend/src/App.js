@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
+const API_BASE = "https://contact-management-app-nqws.onrender.com";
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function App() {
@@ -29,7 +30,7 @@ function App() {
   const isValid = Object.keys(errors).length === 0;
 
   const loadContacts = () => {
-    fetch("/api/contacts")
+    fetch(`${API_BASE}/api/contacts`)
       .then((res) => res.json())
       .then((data) => setContacts(data))
       .catch((err) => console.error(err));
@@ -54,7 +55,7 @@ function App() {
 
     setStatus({ type: "", msg: "" });
 
-    const res = await fetch("/api/contacts", {
+    const res = await fetch(`${API_BASE}/api/contacts`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, phone }),
@@ -186,9 +187,10 @@ function App() {
                           <button
                             style={styles.dangerBtn}
                             onClick={async () => {
-                              const res = await fetch(`/api/contacts/${c._id}`, {
-                                method: "DELETE",
-                              });
+                              const res = await fetch(
+                                `${API_BASE}/api/contacts/${c._id}`,
+                                { method: "DELETE" }
+                              );
 
                               if (res.ok) {
                                 setStatus({
@@ -197,7 +199,10 @@ function App() {
                                 });
                                 loadContacts();
                               } else {
-                                setStatus({ type: "error", msg: "Failed to delete" });
+                                setStatus({
+                                  type: "error",
+                                  msg: "Failed to delete",
+                                });
                               }
                             }}
                           >
@@ -378,4 +383,5 @@ if (typeof window !== "undefined") {
   `;
   document.head.appendChild(styleTag);
 }
+
 export default App;
